@@ -5,13 +5,16 @@
       <li v-else-if="item.value === '-1'" class="blackball" />
       <li v-else />
     </ul>
+    <button />
   </div>
 </template>
 
 <script>
 export default {
   data () {
+    // ボード形成用配列
     const tempitems = []
+    // 配列に値を格納 ※デフォルト石をべたで書いてしまっているのを何とかする
     for (let i = 0; i < 64; i++) {
       if (i === 27 || i === 36) {
         tempitems.push({ num: i, value: '1' })
@@ -21,9 +24,15 @@ export default {
         tempitems.push({ num: i, value: '0' })
       }
     }
+    // 値を返却（HTMLに渡す）
     return {
       items: tempitems,
       turn: false
+    }
+  },
+  methods: {
+    onClickCell () {
+      alert('kita')
     }
   }
 }
