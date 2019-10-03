@@ -1,10 +1,13 @@
 <template>
   <div class="board">
-    <ul v-for="item of items" v-bind:key="item.num" class="cell">
-      <li v-if="item.value === '1'" class="whiteball" />
-      <li v-else-if="item.value === '-1'" class="blackball" />
-      <li v-else />
-    </ul>
+    <template v-for="y in board.length">
+      <div v-for="x in board[y - 1].length" :key="`${x}-${y}`" class="cell" @click="onClickCell(x - 1, y - 1)">
+        <div
+          v-if="board[y - 1][x - 1] !== 0"
+          :class="['ball', board[y - 1][x - 1] === 1 ? 'white' : 'black']"
+        />
+      </div>
+    </template>
     <button />
   </div>
 </template>
@@ -12,27 +15,46 @@
 <script>
 export default {
   data () {
-    // ボード形成用配列
-    const tempitems = []
-    // 配列に値を格納 ※デフォルト石をべたで書いてしまっているのを何とかする
-    for (let i = 0; i < 64; i++) {
-      if (i === 27 || i === 36) {
-        tempitems.push({ num: i, value: '1' })
-      } else if (i === 28 || i === 35) {
-        tempitems.push({ num: i, value: '-1' })
-      } else {
-        tempitems.push({ num: i, value: '0' })
-      }
-    }
     // 値を返却（HTMLに渡す）
     return {
-      items: tempitems,
-      turn: false
+      board: [
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 1, -1, 0, 0, 0],
+        [0, 0, 0, -1, 1, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0]
+      ],
+      turn: -1
     }
   },
   methods: {
-    onClickCell () {
-      alert('kita')
+    onClickCell (x, y) {
+      let result = false
+      // すでに石が置かれているかチェックする
+      if (this.board[y][x] !== 0) {
+        return
+      }
+      // 石が周りにあるか確認する
+      for (let i = y - 1; i < y + 2; i++) {
+        for (let k = x - 1; k < x + 2; k++) {
+          // 周りのマスに石が1つでもあればtrue
+          if (this.board[i] && this.board[i][k] && this.board[i][k] !== 0) {
+            console.log(i, k)
+            result = true
+            break
+          }
+        }
+      }
+      if (result) {
+        this.board = JSON.parse(JSON.stringify(this.board))
+        // 黒か白の判定
+        this.board[y][x] = this.turn
+        // turnを判定させる
+        this.turn *= -1
+      }
     }
   }
 }
@@ -45,27 +67,27 @@ export default {
   height: 640px;
   background: #060;
 }
-.cell{
+
+.cell {
   width: 12.5%;
   height: 12.5%;
   border: black solid 1px;
   float:left;
   list-style: none;
-  padding:0.5%;
-}
-.blackball{
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  border: black solid 1px;
-  background: black;
-}
-.whiteball{
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  border: black solid 1px;
-  background: white;
 }
 
+.ball {
+  width: 80%;
+  height: 80%;
+  border-radius: 50%;
+  margin: 10%;
+}
+
+.black {
+  background: black;
+}
+
+.white {
+  background: white;
+}
 </style>
