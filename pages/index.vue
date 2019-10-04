@@ -72,7 +72,7 @@ export default {
           if (this.board[i] && this.board[i][k] &&
               this.board[i][k] === ribal) {
             checkCell(3, 3, 3)
-            // TODO:centerは[i, k]
+            // TODO:centerは[i, k]とする
             // TODO:directionどうやって出そう
             // リスト追加はこれでいけるthis.getstone.push([i, k])
             // DEBUG用console.log(this.getstone)
