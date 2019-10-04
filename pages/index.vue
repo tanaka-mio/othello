@@ -20,38 +20,71 @@ export default {
       board: [
         [0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 1, 0, 0, 0, 0],
         [0, 0, 0, 1, -1, 0, 0, 0],
         [0, 0, 0, -1, 1, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0]
       ],
-      turn: -1
+      turn: -1,
+      getstone: []
     }
   },
   methods: {
     onClickCell (x, y) {
+      // 更新を実施するか判定用変数
       let result = false
       // すでに石が置かれているかチェックする
       if (this.board[y][x] !== 0) {
         return
       }
-      // 石が周りにあるか確認する
+      // 周り１マスをチェックする
       for (let i = y - 1; i < y + 2; i++) {
         for (let k = x - 1; k < x + 2; k++) {
-          // 周りのマスに石が1つでもあればtrue
+          // 周りのマスに石が1つでもあればtrueとする
           if (this.board[i] && this.board[i][k] && this.board[i][k] !== 0) {
-            console.log(i, k)
             result = true
             break
           }
         }
       }
+      // 敵のあれ
+      const ribal = this.turn * -1
+      // 再帰関数作成
+      function checkCell (center, direction, color) {
+        // チェックする
+        // TODO:centerに方向を足しこんでtargetとする
+        // TODO:targetの色をチェックする
+        // 終了になる条件（リスト追加）
+        if (center !== 0) {
+        // 終了になる条件（処理終了じゃ）
+        } else if (center === 0) {
+        // 再帰になる条件
+        } else {
+        }
+      }
+      // 周り１マスをチェックする
+      for (let i = y - 1; i < y + 2; i++) {
+        for (let k = x - 1; k < x + 2; k++) {
+          console.log(x, y, i, k, this.board[i], this.board[i][k], ribal)
+          // 敵のマスだった場合、配列に格納していく
+          if (this.board[i] && this.board[i][k] &&
+              this.board[i][k] === ribal) {
+            checkCell(3, 3, 3)
+            // TODO:centerは[i, k]
+            // TODO:directionどうやって出そう
+            // リスト追加はこれでいけるthis.getstone.push([i, k])
+            // DEBUG用console.log(this.getstone)
+          }
+        }
+      }
+      // 石の更新処理
       if (result) {
         this.board = JSON.parse(JSON.stringify(this.board))
-        // 黒か白の判定
+        // クリックした場所を更新する
         this.board[y][x] = this.turn
+        // TODO:取れた範囲を更新する
         // turnを判定させる
         this.turn *= -1
       }
