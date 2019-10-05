@@ -28,18 +28,46 @@ export default {
         [0, 0, 0, 0, 0, 0, 0, 0]
       ],
       turn: -1,
+      // 取れる可能性のある石
+      possibilityStone: [],
+      // 取れる石
       getstone: []
     }
   },
   methods: {
     onClickCell (x, y) {
-      // 更新を実施するか判定用変数
+      /*
+       * 方向の先にある石が何色かチェックする関数
+       * 引数：ボードの配列、対象の石座標（X,Y）、方向の座標（X,Y）、自分の色
+       * 自分と同じ色がある場合、リストとして返却
+       * 石が何も置かれていない場合、空のリストを返却
+       * 敵の色がある→再帰関数を呼び続ける
+       * 問題①間の石の候補を取れていないので複数続いた場合、1個しか石が取れない
+       * 問題②方向の先に石が何も置かれていない場合、undefinedのリストが追加される
+       */
+      function checkCell (board, centerI, centerK, directionY, directionX, color) {
+        // 対象の石座標に方向の座標を足しこんでチェック対象を取得する
+        const targetY = centerI + directionY
+        const targetX = centerK + directionX
+        const target = board[targetY][targetX]
+        // 終了になる条件：自分と同じ色（リスト追加）
+        if (target === color) {
+          return ([centerI, centerK])
+        // 再帰になる条件：ライバルと同じ色
+        } else if (target === (color * -1)) {
+          const paramDirectionY = targetY - centerI
+          const paramDirectionX = targetX - centerK
+          // 再帰関数を呼ぶ
+          return checkCell(board, targetY, targetX, paramDirectionY, paramDirectionX, color)
+        }
+      }
+      // (1) 更新を実施するか判定用変数
       let result = false
-      // すでに石が置かれているかチェックする
+      // (2) すでに石が置かれているかチェックする
       if (this.board[y][x] !== 0) {
         return
       }
-      // 周り１マスをチェックする
+      // (3) 周り１マスをチェックする
       for (let i = y - 1; i < y + 2; i++) {
         for (let k = x - 1; k < x + 2; k++) {
           // 周りのマスに石が1つでもあればtrueとする
@@ -49,42 +77,40 @@ export default {
           }
         }
       }
-      // 敵のあれ
-      const ribal = this.turn * -1
-      // 再帰関数作成
-      function checkCell (center, direction, color) {
-        // チェックする
-        // TODO:centerに方向を足しこんでtargetとする
-        // TODO:targetの色をチェックする
-        // 終了になる条件（リスト追加）
-        if (center !== 0) {
-        // 終了になる条件（処理終了じゃ）
-        } else if (center === 0) {
-        // 再帰になる条件
-        } else {
-        }
-      }
-      // 周り１マスをチェックする
+      // (4) 取れる石があるかチェックする
       for (let i = y - 1; i < y + 2; i++) {
         for (let k = x - 1; k < x + 2; k++) {
-          console.log(x, y, i, k, this.board[i], this.board[i][k], ribal)
-          // 敵のマスだった場合、配列に格納していく
+          // 敵のマスだった場合、チェック関数を呼び出す
           if (this.board[i] && this.board[i][k] &&
-              this.board[i][k] === ribal) {
-            checkCell(3, 3, 3)
-            // TODO:centerは[i, k]とする
-            // TODO:directionどうやって出そう
-            // リスト追加はこれでいけるthis.getstone.push([i, k])
-            // DEBUG用console.log(this.getstone)
+              this.board[i][k] === (this.turn * -1)) {
+            // 方向を算出する（対象ー置こうとした場所）
+            const directionY = i - y
+            const directionX = k - x
+            // 方向の先にある石が何色かチェックする関数
+            // 自分と同じ色がある場合、リストとして返却
+            // 石が何も置かれていない場合、空のリストを返却
+            // 敵の色がある→再帰関数を呼び続ける
+            this.getstone.push(checkCell(this.board, i, k, directionY, directionX, this.turn))
           }
         }
       }
-      // 石の更新処理
+      // 取ってきたリストが０件の場合更新しない
+      if (this.getstone.length === 0) {
+        result = false
+      }
+      // (5) 石の更新処理
       if (result) {
         this.board = JSON.parse(JSON.stringify(this.board))
         // クリックした場所を更新する
         this.board[y][x] = this.turn
-        // TODO:取れた範囲を更新する
+        // 取れた範囲を更新する
+        for (let listsize = 0; listsize < this.getstone.length; listsize++) {
+          if (this.getstone[listsize]) {
+            const updateX = this.getstone[listsize][0]
+            const updateY = this.getstone[listsize][1]
+            this.board[updateX][updateY] = this.turn
+          }
+        }
         // turnを判定させる
         this.turn *= -1
       }
