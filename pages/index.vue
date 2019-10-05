@@ -28,8 +28,6 @@ export default {
         [0, 0, 0, 0, 0, 0, 0, 0]
       ],
       turn: -1,
-      // 取れる可能性のある石
-      possibilityStone: [],
       // 取れる石
       getstone: []
     }
@@ -61,23 +59,22 @@ export default {
           return checkCell(board, targetY, targetX, paramDirectionY, paramDirectionX, color)
         }
       }
-      // (1) 更新を実施するか判定用変数
+      // 更新を実施するか判定する変数
       let result = false
-      // (2) すでに石が置かれているかチェックする
+      // すでに石が置かれているかチェックする
       if (this.board[y][x] !== 0) {
         return
       }
-      // (3) 周り１マスをチェックする
+      // 周りのマスに石が1つでもあるかチェックする
       for (let i = y - 1; i < y + 2; i++) {
         for (let k = x - 1; k < x + 2; k++) {
-          // 周りのマスに石が1つでもあればtrueとする
           if (this.board[i] && this.board[i][k] && this.board[i][k] !== 0) {
             result = true
             break
           }
         }
       }
-      // (4) 取れる石があるかチェックする
+      // 取れる石があるかチェックする
       for (let i = y - 1; i < y + 2; i++) {
         for (let k = x - 1; k < x + 2; k++) {
           // 敵のマスだった場合、チェック関数を呼び出す
@@ -98,7 +95,7 @@ export default {
       if (this.getstone.length === 0) {
         result = false
       }
-      // (5) 石の更新処理
+      // 石の更新処理
       if (result) {
         this.board = JSON.parse(JSON.stringify(this.board))
         // クリックした場所を更新する
