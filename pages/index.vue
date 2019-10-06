@@ -28,37 +28,14 @@ export default {
         [0, 0, 0, 0, 0, 0, 0, 0]
       ],
       turn: -1,
+      // 取れる可能性のある石
+      possiblestone: [],
       // 取れる石
       getstone: []
     }
   },
   methods: {
     onClickCell (x, y) {
-      /*
-       * 方向の先にある石が何色かチェックする関数
-       * 引数：ボードの配列、対象の石座標（X,Y）、方向の座標（X,Y）、自分の色
-       * 自分と同じ色がある場合、リストとして返却
-       * 石が何も置かれていない場合、空のリストを返却
-       * 敵の色がある→再帰関数を呼び続ける
-       * 問題①間の石の候補を取れていないので複数続いた場合、1個しか石が取れない
-       * 問題②方向の先に石が何も置かれていない場合、undefinedのリストが追加される
-       */
-      function checkCell (board, centerI, centerK, directionY, directionX, color) {
-        // 対象の石座標に方向の座標を足しこんでチェック対象を取得する
-        const targetY = centerI + directionY
-        const targetX = centerK + directionX
-        const target = board[targetY][targetX]
-        // 終了になる条件：自分と同じ色（リスト追加）
-        if (target === color) {
-          return ([centerI, centerK])
-        // 再帰になる条件：ライバルと同じ色
-        } else if (target === (color * -1)) {
-          const paramDirectionY = targetY - centerI
-          const paramDirectionX = targetX - centerK
-          // 再帰関数を呼ぶ
-          return checkCell(board, targetY, targetX, paramDirectionY, paramDirectionX, color)
-        }
-      }
       // 更新を実施するか判定する変数
       let result = false
       // すでに石が置かれているかチェックする
@@ -84,10 +61,10 @@ export default {
             const directionY = i - y
             const directionX = k - x
             // 方向の先にある石が何色かチェックする関数
-            // 自分と同じ色がある場合、リストとして返却
-            // 石が何も置かれていない場合、空のリストを返却
-            // 敵の色がある→再帰関数を呼び続ける
-            this.getstone.push(checkCell(this.board, i, k, directionY, directionX, this.turn))
+            // 自分と同じ色がある場合、possiblestoneをgetstoneにリスト追加
+            // 石が何も置かれていない場合、その方向のチェックは処理終了
+            // 敵の色がある→候補リストpossiblestoneにリスト追加し、再帰関数を呼び続ける
+            this.checkCell(i, k, directionY, directionX)
           }
         }
       }
@@ -110,6 +87,49 @@ export default {
         }
         // turnを判定させる
         this.turn *= -1
+        // getstoneの初期化
+        this.getstone.length = 0
+      }
+    },
+    /*
+       * 方向の先にある石が何色かチェックする関数
+       * 引数：対象の石座標（X,Y）、方向の座標（X,Y）
+       * 自分と同じ色がある場合、リストとして返却
+       * 石が何も置かれていない場合、空のリストを返却
+       * 敵の色がある→再帰関数を呼び続ける
+       */
+    checkCell (centerI, centerK, directionY, directionX) {
+      const board = this.board
+      // 対象の石座標に方向の座標を足しこんでチェック対象を取得する
+      const targetY = centerI + directionY
+      const targetX = centerK + directionX
+      const target = board[targetY][targetX]
+      // 終了になる条件：自分と同じ色（リスト追加）
+      if (target === this.turn) {
+        // 自分を追加する
+        this.getstone.push([centerI, centerK])
+        // 今までの候補リストを追加する
+        if (this.possiblestone.length !== 0) {
+          for (let m = 0; m < this.possiblestone.length; m++) {
+            const insertY = this.possiblestone[m][0]
+            const insertX = this.possiblestone[m][1]
+            this.getstone.push([insertY, insertX])
+          }
+        }
+        // 候補リストの初期化
+        this.possiblestone.length = 0
+      // 再帰になる条件：ライバルと同じ色
+      } else if (target === (this.turn * -1)) {
+        const paramDirectionY = targetY - centerI
+        const paramDirectionX = targetX - centerK
+        // 候補可能性がある石リストに追加する
+        this.possiblestone.push([centerI, centerK])
+        // 再帰関数を呼ぶ
+        this.checkCell(targetY, targetX, paramDirectionY, paramDirectionX)
+      // 処理を終了させる条件：先に何もない
+      } else if (target === 0) {
+        // 候補リストの初期化
+        this.possiblestone.length = 0
       }
     }
   }
