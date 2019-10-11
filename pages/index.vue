@@ -8,7 +8,10 @@
         />
       </div>
     </template>
-    <button />
+    <div>
+      <button value="GET!!" @click="getapi()" />
+      {{ message }}
+    </div>
   </div>
 </template>
 
@@ -20,7 +23,7 @@ export default {
       board: [
         [0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 1, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 1, -1, 0, 0, 0],
         [0, 0, 0, -1, 1, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0],
@@ -32,6 +35,11 @@ export default {
       possiblestone: [],
       // 取れる石
       getstone: []
+    }
+  },
+  computed: {
+    message () {
+      return this.$store.state.message
     }
   },
   methods: {
@@ -90,6 +98,9 @@ export default {
         // getstoneの初期化
         this.getstone.length = 0
       }
+    },
+    getapi () {
+      this.$store.commit('getapi')
     },
     /*
        * 方向の先にある石が何色かチェックする関数
