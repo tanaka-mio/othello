@@ -1,8 +1,10 @@
+
 export const state = () => ({
   message: ''
 })
 export const mutations = {
-  getapi (state) {
-    state.message = 'GETできたよ'
+  getapi (state, message) {
+    // 取得したメッセージを格納
+    this.state.message = message
   }
 }

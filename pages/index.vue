@@ -9,7 +9,7 @@
       </div>
     </template>
     <div>
-      <button value="GET!!" @click="getapi()" />
+      <button @click="getapi()">GET!!!</button>
       {{ message }}
     </div>
   </div>
@@ -99,8 +99,9 @@ export default {
         this.getstone.length = 0
       }
     },
-    getapi () {
-      this.$store.commit('getapi')
+    async getapi () {
+      const response = await this.$axios.$get('http://localhost:8080/api/sample/getOthelloStone')
+      this.$store.commit('getapi', response)
     },
     /*
        * 方向の先にある石が何色かチェックする関数
