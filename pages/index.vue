@@ -9,7 +9,7 @@
       </div>
     </template>
     <div>
-      <button @click="getapi()">GET!!!</button>
+      <button @click="getMessage()">GET!!!</button>
       {{ message }}
     </div>
   </div>
@@ -20,16 +20,7 @@ export default {
   data () {
     // 値を返却（HTMLに渡す）
     return {
-      board: [
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 1, -1, 0, 0, 0],
-        [0, 0, 0, -1, 1, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0]
-      ],
+      board: [],
       turn: -1,
       // 取れる可能性のある石
       possiblestone: [],
@@ -42,7 +33,27 @@ export default {
       return this.$store.state.message
     }
   },
+  async asyncData ({ $axios }) {
+    const response = await $axios.$get('http://localhost:8080/api/sample/getOthelloStone')
+    return { board: response }
+  },
   methods: {
+    async getMessage () {
+      const response = await this.$axios.$get('http://localhost:8080/api/sample/getMessage')
+      this.$store.commit('getMessage', response)
+    },
+    async onClickCell (x, y) {
+      const response = await this.$axios.$get('http://localhost:8080/api/sample/hitOthelloStone',
+        {
+          params: {
+            hitX: x,
+            hitY: y
+          }
+        })
+      this.$store.commit('getMessage', response)
+    }
+    /*
+    ,
     onClickCell (x, y) {
       // 更新を実施するか判定する変数
       let result = false
@@ -99,17 +110,12 @@ export default {
         this.getstone.length = 0
       }
     },
-    async getapi () {
-      const response = await this.$axios.$get('http://localhost:8080/api/sample/getOthelloStone')
-      this.$store.commit('getapi', response)
-    },
     /*
        * 方向の先にある石が何色かチェックする関数
        * 引数：対象の石座標（X,Y）、方向の座標（X,Y）
        * 自分と同じ色がある場合、リストとして返却
        * 石が何も置かれていない場合、空のリストを返却
        * 敵の色がある→再帰関数を呼び続ける
-       */
     checkCell (centerI, centerK, directionY, directionX) {
       const board = this.board
       // 対象の石座標に方向の座標を足しこんでチェック対象を取得する
@@ -144,6 +150,7 @@ export default {
         this.possiblestone.length = 0
       }
     }
+    */
   }
 }
 </script>
