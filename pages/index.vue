@@ -17,40 +17,24 @@
 
 <script>
 export default {
-  data () {
-    // 値を返却（HTMLに渡す）
-    return {
-      board: [],
-      turn: -1,
-      // 取れる可能性のある石
-      possiblestone: [],
-      // 取れる石
-      getstone: []
-    }
-  },
   computed: {
     message () {
       return this.$store.state.message
+    },
+    board () {
+      return this.$store.state.board
     }
   },
-  async asyncData ({ $axios }) {
-    const response = await $axios.$get('http://localhost:8080/api/sample/getOthelloStone')
-    return { board: response }
+  async fetch ({ store, params }) {
+    await store.dispatch('getBoard')
   },
   methods: {
-    async getMessage () {
-      const response = await this.$axios.$get('http://localhost:8080/api/sample/getMessage')
-      this.$store.commit('getMessage', response)
+    getMessage () {
+      this.$store.dispatch('getMessage')
     },
-    async onClickCell (x, y) {
-      const response = await this.$axios.$get('http://localhost:8080/api/sample/hitOthelloStone',
-        {
-          params: {
-            hitX: x,
-            hitY: y
-          }
-        })
-      this.$store.commit('getMessage', response)
+    onClickCell (x, y) {
+      this.$store.dispatch('hitOthello', { argX: x, argY: y })
+      this.$store.dispatch('getBoard')
     }
     /*
     ,
