@@ -15,17 +15,17 @@ export const mutations = {
 export const actions = {
   async getMessage ({ commit }) {
     // メッセージ取得処理
-    const response = await this.$axios.$get('http://localhost:8080/api/sample/getMessage')
+    const response = await this.$axios.$get('getMessage')
     commit('setMessage', response)
   },
   async getBoard ({ commit }) {
     // オセロ配列取得処理
-    const response = await this.$axios.$get('http://localhost:8080/api/sample/getOthelloStone')
+    const response = await this.$axios.$get('getOthelloStone')
     commit('setBoard', response)
   },
   async hitOthello ({ commit }, { hitX, hitY }) {
     // オセロ押下処理
-    const response = await this.$axios.$get('http://localhost:8080/api/sample/hitOthelloStone', { params: { hitX, hitY } })
+    const response = await this.$axios.$get('hitOthelloStone', { params: { hitX, hitY } })
     commit('setMessage', response)
   }
 }
