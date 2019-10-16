@@ -20,10 +20,7 @@ import { mapState } from 'vuex'
 
 export default {
   computed: {
-    ...mapState({
-      message: state => state.message,
-      board: state => state.board
-    })
+    ...mapState(['message', 'board'])
   },
   async fetch ({ store }) {
     await store.dispatch('getBoard')
@@ -33,7 +30,7 @@ export default {
       await this.$store.dispatch('getMessage')
     },
     async onClickCell (hitX, hitY) {
-      await this.$store.dispatch('hitOthello', { x: hitX, y: hitY })
+      await this.$store.dispatch('hitOthello', { hitX, hitY })
       await this.$store.dispatch('getBoard')
     }
     /*

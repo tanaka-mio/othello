@@ -23,15 +23,9 @@ export const actions = {
     const response = await this.$axios.$get('http://localhost:8080/api/sample/getOthelloStone')
     commit('setBoard', response)
   },
-  async hitOthello ({ commit }, { x, y }) {
+  async hitOthello ({ commit }, { hitX, hitY }) {
     // オセロ押下処理
-    const response = await this.$axios.$get('http://localhost:8080/api/sample/hitOthelloStone',
-      {
-        params: {
-          hitX: x,
-          hitY: y
-        }
-      })
+    const response = await this.$axios.$get('http://localhost:8080/api/sample/hitOthelloStone', { params: { hitX, hitY } })
     commit('setMessage', response)
   }
 }
