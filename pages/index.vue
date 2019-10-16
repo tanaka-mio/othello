@@ -11,6 +11,8 @@
     <div>
       <button @click="getMessage()">GET!!!</button>
       {{ message }}
+      <button @click="getHashTurn()">START!!!</button>
+      {{ hashCode }}
     </div>
   </div>
 </template>
@@ -20,7 +22,7 @@ import { mapState } from 'vuex'
 
 export default {
   computed: {
-    ...mapState(['message', 'board'])
+    ...mapState(['message', 'board', 'hashCode'])
   },
   async fetch ({ store }) {
     await store.dispatch('getBoard')
@@ -32,6 +34,9 @@ export default {
     async onClickCell (hitX, hitY) {
       await this.$store.dispatch('hitOthello', { hitX, hitY })
       await this.$store.dispatch('getBoard')
+    },
+    async getHashTurn () {
+      await this.$store.dispatch('getHashTurn')
     }
     /*
     ,
