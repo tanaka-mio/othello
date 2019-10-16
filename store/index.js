@@ -3,11 +3,11 @@ export const state = () => ({
   board: []
 })
 export const mutations = {
-  getMessage (state, message) {
+  setMessage (state, message) {
     // 取得したメッセージを格納
     this.state.message = message
   },
-  getBoard (state, board) {
+  setBoard (state, board) {
     // 取得したオセロ配列を格納
     this.state.board = board
   }
@@ -16,22 +16,22 @@ export const actions = {
   async getMessage ({ commit }) {
     // メッセージ取得処理
     const response = await this.$axios.$get('http://localhost:8080/api/sample/getMessage')
-    commit('getMessage', response)
+    commit('setMessage', response)
   },
   async getBoard ({ commit }) {
     // オセロ配列取得処理
     const response = await this.$axios.$get('http://localhost:8080/api/sample/getOthelloStone')
-    commit('getBoard', response)
+    commit('setBoard', response)
   },
-  async hitOthello ({ commit }, { argX, argY }) {
+  async hitOthello ({ commit }, { x, y }) {
     // オセロ押下処理
     const response = await this.$axios.$get('http://localhost:8080/api/sample/hitOthelloStone',
       {
         params: {
-          hitX: argX,
-          hitY: argY
+          hitX: x,
+          hitY: y
         }
       })
-    commit('getMessage', response)
+    commit('setMessage', response)
   }
 }

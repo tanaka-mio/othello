@@ -16,25 +16,25 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   computed: {
-    message () {
-      return this.$store.state.message
-    },
-    board () {
-      return this.$store.state.board
-    }
+    ...mapState({
+      message: state => state.message,
+      board: state => state.board
+    })
   },
-  async fetch ({ store, params }) {
+  async fetch ({ store }) {
     await store.dispatch('getBoard')
   },
   methods: {
-    getMessage () {
-      this.$store.dispatch('getMessage')
+    async getMessage () {
+      await this.$store.dispatch('getMessage')
     },
-    onClickCell (x, y) {
-      this.$store.dispatch('hitOthello', { argX: x, argY: y })
-      this.$store.dispatch('getBoard')
+    async onClickCell (hitX, hitY) {
+      await this.$store.dispatch('hitOthello', { x: hitX, y: hitY })
+      await this.$store.dispatch('getBoard')
     }
     /*
     ,
