@@ -36,12 +36,7 @@ export default {
     },
     async getHashTurn () {
       await this.$store.dispatch('getHashTurn')
-      for (let i = 0; i < 100; i++) {
-        setInterval(
-          this.getBoard,
-          3000
-        )
-      }
+      setInterval(this.getBoard, 3000)
     },
     async getBoard () {
       await this.$store.dispatch('getBoard')
