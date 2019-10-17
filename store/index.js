@@ -33,9 +33,10 @@ export const actions = {
     const response = await this.$axios.$get('getOthelloStone')
     commit('setBoard', response)
   },
-  async hitOthello ({ commit }, { hitX, hitY }) {
+  async hitOthello ({ commit }, { hitX, hitY, hashCode }) {
     // オセロ押下処理
-    const response = await this.$axios.$get('hitOthelloStone', { params: { hitX, hitY } })
+    const response = await this.$axios.$get('hitOthelloStone',
+      { params: { hitX, hitY, hashCode } })
     commit('setMessage', response)
   },
   async getHashTurn ({ commit }) {

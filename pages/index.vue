@@ -1,7 +1,7 @@
 <template>
   <div class="board">
     <template v-for="y in board.length">
-      <div v-for="x in board[y - 1].length" :key="`${x}-${y}`" class="cell" @click="onClickCell(x - 1, y - 1)">
+      <div v-for="x in board[y - 1].length" :key="`${x}-${y}`" class="cell" @click="onClickCell(x - 1, y - 1, hashCode)">
         <div
           v-if="board[y - 1][x - 1] !== 0"
           :class="['ball', board[y - 1][x - 1] === 1 ? 'white' : 'black']"
@@ -9,10 +9,9 @@
       </div>
     </template>
     <div>
-      <button @click="getMessage()">GET!!!</button>
+      <button @click="getHashTurn()">GAME START!!!</button>
+      <br />
       {{ message }}
-      <button @click="getHashTurn()">START!!!</button>
-      {{ hashCode }}
     </div>
   </div>
 </template>
@@ -31,12 +30,21 @@ export default {
     async getMessage () {
       await this.$store.dispatch('getMessage')
     },
-    async onClickCell (hitX, hitY) {
-      await this.$store.dispatch('hitOthello', { hitX, hitY })
+    async onClickCell (hitX, hitY, hashCode) {
+      await this.$store.dispatch('hitOthello', { hitX, hitY, hashCode })
       await this.$store.dispatch('getBoard')
     },
     async getHashTurn () {
       await this.$store.dispatch('getHashTurn')
+      for (let i = 0; i < 100; i++) {
+        setInterval(
+          this.getBoard,
+          3000
+        )
+      }
+    },
+    async getBoard () {
+      await this.$store.dispatch('getBoard')
     }
     /*
     ,
