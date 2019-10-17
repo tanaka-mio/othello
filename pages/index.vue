@@ -32,11 +32,14 @@ export default {
     },
     async onClickCell (hitX, hitY, hashCode) {
       await this.$store.dispatch('hitOthello', { hitX, hitY, hashCode })
-      await this.$store.dispatch('getBoard')
+      await this.$store.dispatch('getBoardStatus')
     },
     async getHashTurn () {
       await this.$store.dispatch('getHashTurn')
-      setInterval(this.getBoard, 3000)
+      setInterval(this.getBoardStatus, 3000)
+    },
+    async getBoardStatus () {
+      await this.$store.dispatch('getBoardStatus')
     },
     async getBoard () {
       await this.$store.dispatch('getBoard')

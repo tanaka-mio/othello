@@ -2,7 +2,8 @@ export const state = () => ({
   message: '',
   board: [],
   hashCode: '',
-  turn: 0
+  turn: 0,
+  status: ''
 })
 export const mutations = {
   setMessage (state, message) {
@@ -18,8 +19,12 @@ export const mutations = {
     this.state.hashCode = hashCode
   },
   setTurn (state, turn) {
-    // 取得したハッシュコードを格納
+    // 取得した自分のターンを格納
     this.state.turn = turn
+  },
+  setStatus (state, status) {
+    // 取得したステータスを格納
+    this.state.status = status
   }
 }
 export const actions = {
@@ -44,5 +49,11 @@ export const actions = {
     const response = await this.$axios.$get('getGameStartCode')
     commit('setHashcode', response.hashCode)
     commit('setTurn', response.turn)
+  },
+  async getBoardStatus ({ commit }) {
+    // オセロ配列取得処理
+    const response = await this.$axios.$get('getBoardStatus')
+    commit('setBoard', response.OthelloStone)
+    commit('setStatus', response.status)
   }
 }
