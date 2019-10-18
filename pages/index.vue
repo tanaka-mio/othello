@@ -12,6 +12,9 @@
       <button @click="getHashTurn()">GAME START!!!</button>
       <br />
       {{ message }}
+      {{ loaded }}
+      <br />
+      <button @click="getStopCode()">STOP!!!</button>
     </div>
   </div>
 </template>
@@ -21,7 +24,7 @@ import { mapState } from 'vuex'
 
 export default {
   computed: {
-    ...mapState(['message', 'board', 'hashCode'])
+    ...mapState(['message', 'board', 'hashCode', 'status'])
   },
   async fetch ({ store }) {
     await store.dispatch('getBoard')
@@ -36,13 +39,25 @@ export default {
     },
     async getHashTurn () {
       await this.$store.dispatch('getHashTurn')
-      setInterval(this.getBoardStatus, 3000)
+      // setInterval(this.getIntervalBoard, 3000)
+      // 現在はiにしているが、後々statusで判定させたい
+      let i = 0
+      const intervalId = setInterval(function () {
+        console.log(i++) 
+        this.getBoardStatus
+        if (i > 3) {
+          clearInterval(intervalId)
+        }
+      }, 1000)
     },
     async getBoardStatus () {
       await this.$store.dispatch('getBoardStatus')
     },
     async getBoard () {
       await this.$store.dispatch('getBoard')
+    },
+    getStopCode () {
+      this.$store.dispatch('getStopCode')
     }
     /*
     ,
