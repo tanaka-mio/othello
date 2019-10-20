@@ -1,19 +1,22 @@
 <template>
-  <div class="board">
-    <template v-for="y in board.length">
-      <div v-for="x in board[y - 1].length" :key="`${x}-${y}`" class="cell" @click="onClickCell(x - 1, y - 1, hashCode)">
-        <div
-          v-if="board[y - 1][x - 1] !== 0"
-          :class="['ball', board[y - 1][x - 1] === 1 ? 'white' : 'black']"
-        />
-      </div>
-    </template>
-    <div>
+  <div>
+    <div class="menu">
+      <input type="text" value="あなたの名前" />
       <button @click="getHashTurn()">GAME START!!!</button>
-      <br />
-      {{ message }}
-      <br />
       <button @click="getStopCode()">STOP!!!</button>
+    </div>
+    <div class="messageArea">
+      ○○さん    {{ message }}
+    </div>
+    <div class="board">
+      <template v-for="y in board.length">
+        <div v-for="x in board[y - 1].length" :key="`${x}-${y}`" class="cell" @click="onClickCell(x - 1, y - 1, hashCode)">
+          <div
+            v-if="board[y - 1][x - 1] !== 0"
+            :class="['ball', board[y - 1][x - 1] === 1 ? 'white' : 'black']"
+          />
+        </div>
+      </template>
     </div>
   </div>
 </template>
@@ -24,7 +27,7 @@ import { mapState } from 'vuex'
 export default {
   data () {
     return {
-      stopCode: 0
+      intervalId: 0
     }
   },
   computed: {
@@ -33,7 +36,7 @@ export default {
   watch: {
     status (val) {
       if (val === 'stopping') {
-        this.stopCode = 1
+        clearInterval(this.intervalId)
       }
     }
   },
@@ -50,12 +53,7 @@ export default {
     },
     async getHashTurn () {
       await this.$store.dispatch('getHashTurn')
-      const intervalId = setInterval(() => {
-        this.getBoardStatus()
-        if (this.stopCode === 1) {
-          clearInterval(intervalId)
-        }
-      }, 1000)
+      this.intervalId = setInterval(this.getBoardStatus, 1000)
     },
     async getBoardStatus () {
       await this.$store.dispatch('getBoardStatus')
@@ -170,6 +168,14 @@ export default {
 </script>
 
 <style>
+.menu {
+  margin:5%;
+}
+
+.messageArea {
+  margin:0 5%;
+}
+
 .board {
   margin: 0 auto;
   width:640px;
