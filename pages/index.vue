@@ -53,10 +53,11 @@ export default {
     },
     async getHashTurn () {
       await this.$store.dispatch('getHashTurn')
+      console.log(this.$store.state.hashCode)
       this.intervalId = setInterval(this.getBoardStatus, 1000)
     },
     async getBoardStatus () {
-      await this.$store.dispatch('getBoardStatus')
+      await this.$store.dispatch('getBoardStatus', this.$store.state.hashCode)
     },
     async getBoard () {
       await this.$store.dispatch('getBoard')

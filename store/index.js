@@ -50,11 +50,15 @@ export const actions = {
     commit('setHashcode', response.hashCode)
     commit('setTurn', response.turn)
   },
-  async getBoardStatus ({ commit }) {
+  async getBoardStatus ({ commit }, hashCode) {
+    if (!hashCode) {
+      hashCode = 'null'
+    }
     // オセロ配列取得処理
-    const response = await this.$axios.$get('getBoardStatus')
+    const response = await this.$axios.$get('getBoardStatus', { params: { hashCode } })
     commit('setBoard', response.OthelloStone)
     commit('setStatus', response.status)
+    commit('setMessage', response.message)
   },
   getStopCode ({ commit }) {
     // 停止処理：本当はAPIから停止ステータス欲しいけどそこまで実装していないので一旦
