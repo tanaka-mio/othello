@@ -1,6 +1,7 @@
 export const state = () => ({
   message: '',
   board: [],
+  // hashCode: localStorage.hashCode || '',
   hashCode: '',
   turn: 0,
   status: ''
@@ -17,6 +18,7 @@ export const mutations = {
   setHashcode (state, hashCode) {
     // 取得したハッシュコードを格納
     this.state.hashCode = hashCode
+    // localStorage.hashCode = hashCode
   },
   setTurn (state, turn) {
     // 取得した自分のターンを格納
@@ -54,6 +56,8 @@ export const actions = {
     if (!hashCode) {
       hashCode = 'null'
     }
+    // TODO:ローカルストレージ使うときにコメントはずす
+    // state.hashCode
     // オセロ配列取得処理
     const response = await this.$axios.$get('getBoardStatus', { params: { hashCode } })
     commit('setBoard', response.OthelloStone)
